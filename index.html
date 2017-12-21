@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset = "UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>TRIVIA GAME</title>
+	<!--Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+	<!--custom css-->
+	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+
+	<script src="https://code.jquery.com/jquery-3.1.1.js"
+	integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+	crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+	<script src="assets/javascript/data.js"></script>
+	<script src="assets/javascript/app.js"></script>
+
+
+</head>
+<body > 
+
+<div class="container" id = "header">
+    <h1>TEST YOUR JAVASCRIPT SKILLS!</h1> 
+    <div> You have <span id="timer"> 0 </span> seconds to go! </div>
+</div>
+
+<div class="container" id="wrapper">
+	<div id="div-start">
+		<div class="row">
+			<div class="col-md-12">
+				<div>
+					Are you ready to take on the challenge?
+				</div>
+				<div>
+					<button class='btn btn-success' id="btn-start"> Begin </button>	
+				</div>			
+			</div>
+		</div>
+	</div>
+
+	<div class="div-play">
+		<div class="row">
+			<div class="col-md-12 div-main">
+				<div id="div-question"></div>
+			</div>
+		</div>
+
+		<div id ="div-answers" >
+			<div class = "row text-center">
+				<div class="col-md-6 choiceAns" id="choice_0" data-index="0">	
+				</div>				
+				<div class="col-md-6 choiceAns" id="choice_1" data-index="1">
+				</div>
+			</div>
+			<div class = "row">
+				<div class="col-md-6 choiceAns" id="choice_2" data-index="2">
+				</div>
+				<div class="col-md-6 choiceAns" id="choice_3" data-index="3">
+				</div>
+			</div>
+		</div>
+	</div>
+
+ 	<div id ="div-results">
+		<div class = "row">
+			<div class="col-md-6"> 
+				<div id="ans-status"></div>
+				<div id="ans-right"></div>
+			</div>
+			<div class="col-md-6"> 
+				<div id="img-result"></div>
+			</div>
+		</div>
+	</div>	 
+
+</div>
+
+<div id='footer'>created by Asha Tad</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="resultsModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" id="results-content">
+     <div class="modal-header" id= "results-header">
+     	<h5 class="modal-title" id="resultsModalLabel">Keep Calm And Code On! </h5>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+		</button>
+      </div> 
+      <div class="modal-body" id="resultsModal">
+      </div>
+		<div class="modal-footer" id="resultsFooter">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal" id="restart">Play again?</button>
+		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		</div>
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>
