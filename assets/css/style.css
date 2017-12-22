@@ -37,7 +37,6 @@ body {
 }
 
 #wrapper{
-	/*background-color: rgba(255,255,255,0.5);*/
 	margin: 40px auto;
 	text-align: center;
 }
@@ -85,15 +84,17 @@ body {
 	color: red;
 }
 
-#results-header,
-#resultsLabel{
-	font-size: 40px;
-	background-color: #FFEC8B;
-	color: #000000;
-	text-align: center;
+#results-header{
+	background-color: #FFEC8B;	
 }
 
-#resultsModal{
+#results-title{
+	font-size: 32px;
+	font-weight: bold;
+	color: #000;
+}
+
+#results-body{
 	background-color: #000000;
 	font-size: 30px;
 	text-align: center;
@@ -101,7 +102,7 @@ body {
 	font-weight: bold;
 }
 
-#resultsFooter{
+#results-footer{
 	text-align: center;
 	background-color: #FFEC8B;
 }
@@ -153,7 +154,7 @@ body {
 	/*	color: red;*/
 	/*margin-top: 20px;*/
 	background-color: #000000;
-	padding-top: 20px;
+	padding: 10px 0px;
 	opacity: .7;
 	margin: 20px 0px;
 }

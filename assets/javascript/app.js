@@ -1,5 +1,6 @@
 $(document).ready(function(){
 
+//Timer Object
 var myWatch;
 
 var stopwatch = {
@@ -22,7 +23,7 @@ var stopwatch = {
 
 		if(stopwatch.time == 0){
 			stopwatch.stop();
-			updateStatus();
+			triviaGame.updateStatus();
 
 		}else{
 			sound('tick');
@@ -57,48 +58,193 @@ var stopwatch = {
 
 };
 
-var isGameStarted = false;
-var isGameEnd = false;
-var isAnswerChosen = false;
-var totalQuestions = 0;
-var rightAnswers = 0;
-var wrongAnswers = 0;
-var unansweredQns = 0;
-var randomQnsIndexList = [];
+
+//QA object
+var triviaQA = {
+	randomQnsIndexList : [],
+	numOfQuestions : 10,
+	rightAnswerIndex : 0,
+	correctAnswer : 0,
+	correctImage : '',
+
+	generateUniqueQuestions : function(){
+	
+		while(this.randomQnsIndexList.length < this.numOfQuestions){ 
+
+			let randomnumber = Math.ceil(Math.random()* dataBank.length-1)
+			if(this.randomQnsIndexList.indexOf(randomnumber) > -1) 
+			continue;
+			this.randomQnsIndexList[this.randomQnsIndexList.length] = randomnumber;
+
+		}
+
+	   console.log(this.randomQnsIndexList);
+	},
+
+	getRandomQuestion: function(){
+
+		let questionIndex;
+
+		if (this.randomQnsIndexList.length > 0){
+			questionIndex = this.randomQnsIndexList.pop(this.randomQnsIndexList.length - 1);
+		}
+
+		console.log(this.randomQnsIndexList);
+
+		if(questionIndex != undefined){
+			$("#div-question").html(dataBank[questionIndex].question);
+			$("#choice_0").html(dataBank[questionIndex].answer[0]);
+			$("#choice_1").html(dataBank[questionIndex].answer[1]);
+			$("#choice_2").html(dataBank[questionIndex].answer[2]);
+			$("#choice_3").html(dataBank[questionIndex].answer[3]);
+
+			let aIndex = dataBank[questionIndex].ansIndex;	
+
+			this.rightAnswerIndex = dataBank[questionIndex].ansIndex;
+			this.correctImage = dataBank[questionIndex].qaURL;
+			this.correctAnswer = dataBank[questionIndex].answer[aIndex];
+
+		}
+	},
+
+	checkAnswers : function(index){
+		return (index === this.rightAnswerIndex);
+	},
+
+	showCorrect : function(str){
+
+		toggleDivs('pause');
+
+		if(str ==='right'){
+			sound('right');
+			displayStatus(" YOU GOT THAT RIGHT ! <img src='" + "assets/images/clap.gif" + "' width= 50 height =50>" + "<BR> ", 'green');
+		}else if (str === 'wrong'){
+			sound('wrong');
+			displayStatus(" YOU GOT THAT WRONG ! <img src='" + "assets/images/wrong.gif" + "' width= 50 height =50>" + "<BR> ", 'red');
+		}else if (str === 'missed'){
+			sound('missed');
+			displayStatus(" YOU MISSED ANSWERING ! <img src='" + "assets/images/missed.gif" + "' width= 50 height =50>" + "<BR> ", "red")
+		}
+
+		$('#ans-right').html('THE CORRECT ANSWER IS <BR>"' + this.correctAnswer + '"');
+		$("#img-result").html("<img width='450' height= '310' src='" + this.correctImage + "'>");						
+						
+	},
+
+	resetQA : function(){
+		this.randomQnsIndexList = [];
+		this.rightAnswerIndex = 0,
+		this.correctAnswer = 0,
+		this.correctImage = ''
+	}
+};
+
+
+//game object
+
+var triviaGame = {
+	rightAnswers : 0,
+	wrongAnswers : 0,
+	unansweredQns : 0,
+	totalQuestions : 0,
+
+	startGame : function(){
+		sound("start");
+		toggleDivs('show');
+
+		triviaQA.getRandomQuestion();
+		stopwatch.reset();
+		stopwatch.start();
+	},
+
+	pickAnswer : function(index){
+		let isRight = triviaQA.checkAnswers(index);
+
+		if(isRight){
+			this.rightAnswers++;
+			triviaQA.showCorrect('right');
+		}else{
+			this.wrongAnswers++;
+			triviaQA.showCorrect('wrong');
+		}
+
+		this.totalQuestions = triviaQA.randomQnsIndexList.length;
+
+		if(this.totalQuestions > 0){
+			setTimeout(this.startGame, 7000);
+		}else{
+			this.showResults();	
+			triviaQA.resetQA();
+			this.resetGame();
+			reset();
+		}
+	},
+
+	updateStatus : function(){
+		console.log(this.totalQuestions);
+		if(this.totalQuestions <=10){
+			this.unansweredQns++;
+			triviaQA.showCorrect('missed');
+			setTimeout(this.startGame, 7000);
+		}else{
+			this.showResults();
+			this.resetGame();
+		}
+	},
+
+	showResults : function(){
+		sound('end');
+
+		let results = 
+		"Right Answers : " + this.rightAnswers + '<br>' + 
+		"Wrong Answers : " + this.wrongAnswers + '<br>' + 
+		"Unanswered Questions: " + this.unansweredQns; 
+
+		console.log(results);
+
+		$('#results-modal').modal('show');
+		$('#results-modal').on('shown.bs.modal', function() {
+			$('#results-modal').find('#results-body').html(results);
+		});
+
+	},
+
+	resetGame : function(){
+		stopwatch.stop();
+		totalQuestions = 0;
+		rightAnswers = 0;
+		wrongAnswers = 0;
+		unansweredQns = 0;
+	}
+
+};
 
 toggleDivs('hide');	
 
 $('#btn-start').on('click', function(){
-	isGameStarted = true;
-	generateUniqueQuestions();
-	startGame();
+	triviaQA.generateUniqueQuestions();
+	triviaGame.startGame();
 });
 
 $('.choiceAns').on('click', function(){
 	stopwatch.stop();
-	checkAnswers($(this).data("index"));
+	triviaGame.pickAnswer($(this).data("index"));
 });
 
-$('#replay').click(function(){
-	$('#myModal').modal('hide');
-	$("#myModal").on("hidden.bs.modal", function(){
-	 	$('#myModal').find('.modal-body').html(" ");
-	});
-
-	isGameStarted = true;
-	generateUniqueQuestions();
-	startGame();
-});	
-
 $('#restart').click(function(){
-	$('#myModal').modal('hide');
-	$("#myModal").on("hidden.bs.modal", function(){
-	 	$('#myModal').find('.modal-body').html(" ");
-	});
-
 	location.reload(); //dont reload, reset
+	resetModal();
+
+	triviaQA.generateUniqueQuestions();
+	triviaGame.startGame();
 });	
 
+function resetModal(){
+	$('#results-modal').modal('hide');
+	$("#myModal").on("hidden.bs.modal", function(){
+	 	$('#results-modal').find('#results-body').html(" ");
+	});
+}
 
 function toggleDivs(action){
 
@@ -125,151 +271,13 @@ function toggleDivs(action){
 
 }
 
-
-var	totalQuestions = 0;
-var	rightAnswerIndex = 0;
-var	correctAnswer = 0;
-var	correctImage = '';
-
-function startGame(){
-	sound("start");
-	toggleDivs('show');
-	getRandomQuestion();
-	stopwatch.reset();
-	stopwatch.start();
-}
-
-function resetGame(){
-	stopwatch.stop();
-	isGameStarted = false;
-	isGameEnd = false;
-	isAnswerChosen = false;
-	totalQuestions = 0;
-	rightAnswers = 0;
-	wrongAnswers = 0;
-	unansweredQns = 0;
-	randomQnsIndexList = [];
-}
-
-function generateUniqueQuestions(){
-	while(randomQnsIndexList.length <10){
-    var randomnumber = Math.ceil(Math.random()* dataBank.length-1)
-    if(randomQnsIndexList.indexOf(randomnumber) > -1) 
-    	continue;
-    randomQnsIndexList[randomQnsIndexList.length] = randomnumber;
-	}
-   console.log(randomQnsIndexList);
-}
-
-function getRandomQuestion(){
-	var questionIndex;
-
-	if (randomQnsIndexList.length > 0){
-		questionIndex = randomQnsIndexList.pop(randomQnsIndexList.length-1);
-	}
-
-	if(questionIndex != undefined){
-		$("#div-question").html(dataBank[questionIndex].question);
-		$("#choice_0").html(dataBank[questionIndex].answer[0]);
-		$("#choice_1").html(dataBank[questionIndex].answer[1]);
-		$("#choice_2").html(dataBank[questionIndex].answer[2]);
-		$("#choice_3").html(dataBank[questionIndex].answer[3]);
-
-		rightAnswerIndex = dataBank[questionIndex].rightAnsIndex;
-		correctAnswer = dataBank[questionIndex].answer[rightAnswerIndex];
-		correctImage = dataBank[questionIndex].qaURL;
-	}
-
-	totalQuestions++ ;
-
-}
-
-function checkAnswers(index){
-
-	if(index === rightAnswerIndex ){
-
-		// $('*[data-customerID="22"]');
-		let idName = $('[data-index="' + index + '"]').attr('id');
-		$('#' +idName).prepend("<span class='glyphicon glyphicon-ok'></span>       ");
-
-		rightAnswers++;
-			showCorrect('right');
-	}else{			
-		
-		let idName = $('[data-index="' + index + '"]').attr('id');
-		$('#' +idName).prepend("<span class='glyphicon glyphicon-remove'></span>       ");
-		wrongAnswers++;
-		showCorrect('wrong');
-	}
-
-	if(totalQuestions < 10){
-		setTimeout(startGame, 7000);
-
-	}else{
-		showResults();	
-		reset();
-		resetGame();		
-	}
-
-}
-
-function showResults(){
-	sound('end');
-	let results = 
-	"Right Answers : " + rightAnswers + '<br>' + 
-	"Wrong Answers : " + wrongAnswers + '<br>' + 
-	"Unanswered Questions: " + unansweredQns; 
-
-	//make this work in 4
-
-	$('#myModal').modal('show');
-	$('#myModal').on('shown.bs.modal', function() {
-		$('#myModal').find('#resultsModal').html(results);
-	});
-}
-
-function showCorrect(str){
-
-	toggleDivs('pause');
-
-	if(str ==='right'){
-		sound('right');
-		displayStatus(" YOU GOT THAT RIGHT! <img src='" + "assets/images/clap.gif" + "' width= 50 height =50>" + "<BR><BR> ", 'green');
-	}else if (str === 'wrong'){
-		sound('wrong');
-		displayStatus(" YOU GOT THAT WRONG! <img src='" + "assets/images/wrong.gif" + "' width= 50 height =50>" + "<BR><BR> ", 'red');
-	}else if (str === 'missed'){
-		sound('missed');
-		displayStatus(" YOU MISSED ANSWERING ! <img src='" + "assets/images/missed.gif" + "' width= 50 height =50>" + "<BR><BR> ", "red")
-	}
-
-	$('#ans-right').html('THE CORRECT ANSWER IS <BR>"' + correctAnswer + '"');
-	// $('#jsImg').find('img').attr('src', '');
-
-	$("#img-result").html("<img width='450' height= '310' src='" 
-					+ correctImage
-					+ "'>");
-}
-
 function displayStatus(status, color){
 	$('#ans-status').html(status);
 	$('#ans-status').css("color", color);
 }
 
-function updateStatus(){
-	if(totalQuestions <=10){
-		unansweredQns++;
-		showCorrect('missed');
-		setTimeout(startGame, 7000);
-	}else{
-		showResults();
-		resetGame();
-	}
-}
-
 function reset(){
 	stopwatch.stop();
-	totalQuestions = 0;
 }
 
 function sound(str){
@@ -291,6 +299,5 @@ function sound(str){
 	}
     audio.play();   
 }
-
 
 });

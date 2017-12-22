@@ -2,21 +2,20 @@
 <html lang="en">
 <head>
 	<meta charset = "UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<title>TRIVIA GAME</title>
 	<!--Bootstrap -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	<!--custom css-->
 	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
 
 	<script src="https://code.jquery.com/jquery-3.1.1.js"
 	integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
 	crossorigin="anonymous"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 	<script src="assets/javascript/data.js"></script>
 	<script src="assets/javascript/app.js"></script>
-
 
 </head>
 <body > 
@@ -79,26 +78,31 @@
 
 <div id='footer'>created by Asha Tad</div>
 
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="resultsModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content" id="results-content">
-     <div class="modal-header" id= "results-header">
-     	<h5 class="modal-title" id="resultsModalLabel">Keep Calm And Code On! </h5>
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-		<span aria-hidden="true">&times;</span>
-		</button>
-      </div> 
-      <div class="modal-body" id="resultsModal">
-      </div>
-		<div class="modal-footer" id="resultsFooter">
+<div class="modal fade" id="results-modal" role="dialog">
+<div class="modal-dialog">
+
+  <!--Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" id="results-header">
+      <h4 class="modal-title text-center" id="results-title"> Keep Calm and Code On!</h4>
+    </div>
+    <div class="modal-body" id ="results-body">
+    </div>
+    <div class="modal-footer" id="results-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 		<button type="button" class="btn btn-secondary" data-dismiss="modal" id="restart">Play again?</button>
-		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-		</div>
     </div>
   </div>
+  
 </div>
+</div> 
 
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+	<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
 </body>
 </html>
