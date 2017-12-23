@@ -151,7 +151,6 @@ var triviaQA = {
 	},
 
 	doQATimeout : function(){
-
 		if(!this.checkQAStatus()){
 			this.unansweredQns++;
 			this.showCorrect('missed');
@@ -230,11 +229,14 @@ $('.choiceAns').on('click', function(){
 	triviaGame.pickAnswer($(this).data("index"));
 });
 
-$('#restart').click(function(){
-	// location.reload(); //dont reload, reset
+$('#btn-restart').click(function(){
 	resetModal();
 	triviaQA.generateUniqueQuestions();
 	triviaGame.startGame();
+});	
+
+$('#btn-close').click(function(){
+	location.reload(); 
 });	
 
 function toggleDivs(action){
