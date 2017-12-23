@@ -66,32 +66,34 @@ var triviaQA = {
 	rightAnswerIndex : 0,
 	correctAnswer : 0,
 	correctImage : '',
+	rightAnswers : 0,
+	wrongAnswers : 0,
+	unansweredQns : 0,
 
 	generateUniqueQuestions : function(){
 	
 		while(this.randomQnsIndexList.length < this.numOfQuestions){ 
 
-			let randomnumber = Math.ceil(Math.random()* dataBank.length-1)
+			let randomnumber = Math.floor(Math.random() * dataBank.length)
 			if(this.randomQnsIndexList.indexOf(randomnumber) > -1) 
 			continue;
 			this.randomQnsIndexList[this.randomQnsIndexList.length] = randomnumber;
 
 		}
-
-	   console.log(this.randomQnsIndexList);
 	},
 
 	getRandomQuestion: function(){
+		console.log(this.randomQnsIndexList);
 
 		let questionIndex;
 
 		if (this.randomQnsIndexList.length > 0){
 			questionIndex = this.randomQnsIndexList.pop(this.randomQnsIndexList.length - 1);
-		}
+		}		
 
-		console.log(this.randomQnsIndexList);
+		console.log('questionIndex', questionIndex);
 
-		if(questionIndex != undefined){
+		if(questionIndex != undefined || questionIndex != null){
 			$("#div-question").html(dataBank[questionIndex].question);
 			$("#choice_0").html(dataBank[questionIndex].answer[0]);
 			$("#choice_1").html(dataBank[questionIndex].answer[1]);
@@ -108,7 +110,16 @@ var triviaQA = {
 	},
 
 	checkAnswers : function(index){
-		return (index === this.rightAnswerIndex);
+
+		if(index === this.rightAnswerIndex){
+			this.rightAnswers++;
+			this.showCorrect('right');
+			console.log("rightanswer ", this.rightAnswers);
+		}else{
+			this.wrongAnswers++;
+			this.showCorrect('wrong');
+			console.log("wronganswer ", this.wrongAnswers);
+		}
 	},
 
 	showCorrect : function(str){
@@ -131,22 +142,41 @@ var triviaQA = {
 						
 	},
 
+	printResults : function(){
+
+		return "Right Answers : " + this.rightAnswers + '<br>' + 
+		"Wrong Answers : " + this.wrongAnswers + '<br>' + 
+		"Unanswered Questions: " + this.unansweredQns; 
+	},
+
+	checkQAStatus : function(){
+		return (this.randomQnsIndexList.length <= 0);	
+	},
+
+	doQATimeout : function(){
+
+		if(!this.checkQAStatus()){
+			this.unansweredQns++;
+			console.log("unanswered ", this.unansweredQns);
+			this.showCorrect('missed');
+		}
+
+	},
+
 	resetQA : function(){
 		this.randomQnsIndexList = [];
 		this.rightAnswerIndex = 0,
 		this.correctAnswer = 0,
-		this.correctImage = ''
+		this.correctImage = '',
+		this.rightAnswers = 0,
+		this.wrongAnswers = 0,
+		this.unansweredQns = 0
 	}
 };
-
 
 //game object
 
 var triviaGame = {
-	rightAnswers : 0,
-	wrongAnswers : 0,
-	unansweredQns : 0,
-	totalQuestions : 0,
 
 	startGame : function(){
 		sound("start");
@@ -158,47 +188,31 @@ var triviaGame = {
 	},
 
 	pickAnswer : function(index){
-		let isRight = triviaQA.checkAnswers(index);
 
-		if(isRight){
-			this.rightAnswers++;
-			triviaQA.showCorrect('right');
+		triviaQA.checkAnswers(index);
+
+		if(triviaQA.checkQAStatus()){
+			this.showResults();
 		}else{
-			this.wrongAnswers++;
-			triviaQA.showCorrect('wrong');
-		}
-
-		this.totalQuestions = triviaQA.randomQnsIndexList.length;
-
-		if(this.totalQuestions > 0){
 			setTimeout(this.startGame, 7000);
-		}else{
-			this.showResults();	
-			triviaQA.resetQA();
-			this.resetGame();
-			reset();
 		}
 	},
 
 	updateStatus : function(){
-		console.log(this.totalQuestions);
-		if(this.totalQuestions <=10){
-			this.unansweredQns++;
-			triviaQA.showCorrect('missed');
-			setTimeout(this.startGame, 7000);
+
+		triviaQA.doQATimeout();
+
+		if(triviaQA.checkQAStatus()){
+			setTimeout(this.showResults, 5000);			
 		}else{
-			this.showResults();
-			this.resetGame();
+			setTimeout(this.startGame, 7000);
 		}
 	},
 
 	showResults : function(){
 		sound('end');
 
-		let results = 
-		"Right Answers : " + this.rightAnswers + '<br>' + 
-		"Wrong Answers : " + this.wrongAnswers + '<br>' + 
-		"Unanswered Questions: " + this.unansweredQns; 
+		let results = triviaQA.printResults();
 
 		console.log(results);
 
@@ -210,16 +224,10 @@ var triviaGame = {
 	},
 
 	resetGame : function(){
-		stopwatch.stop();
-		totalQuestions = 0;
-		rightAnswers = 0;
-		wrongAnswers = 0;
-		unansweredQns = 0;
+		// stopwatch.stop();
 	}
 
 };
-
-toggleDivs('hide');	
 
 $('#btn-start').on('click', function(){
 	triviaQA.generateUniqueQuestions();
@@ -232,22 +240,14 @@ $('.choiceAns').on('click', function(){
 });
 
 $('#restart').click(function(){
-	location.reload(); //dont reload, reset
+	// location.reload(); //dont reload, reset
 	resetModal();
 
 	triviaQA.generateUniqueQuestions();
 	triviaGame.startGame();
 });	
 
-function resetModal(){
-	$('#results-modal').modal('hide');
-	$("#myModal").on("hidden.bs.modal", function(){
-	 	$('#results-modal').find('#results-body').html(" ");
-	});
-}
-
 function toggleDivs(action){
-
 	if(action == 'hide'){
 		$('#div-results').hide();
 		$('#div-play').hide();
@@ -271,6 +271,15 @@ function toggleDivs(action){
 
 }
 
+function resetModal(){
+	$('#results-modal').modal('hide');
+	$("#results-modal").on("hidden.bs.modal", function(){
+	 	$('#results-modal').find('#results-body').html(" ");
+	});
+
+	reset(); //resets all game variables
+}
+
 function displayStatus(status, color){
 	$('#ans-status').html(status);
 	$('#ans-status').css("color", color);
@@ -278,6 +287,8 @@ function displayStatus(status, color){
 
 function reset(){
 	stopwatch.stop();
+	triviaQA.resetQA();
+	triviaGame.resetGame();
 }
 
 function sound(str){
@@ -299,5 +310,8 @@ function sound(str){
 	}
     audio.play();   
 }
+
+//begin
+toggleDivs('hide');	
 
 });

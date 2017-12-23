@@ -76,14 +76,6 @@ body {
 	height: 130px;
 }
 
-.glyphicon-ok{
-	color : green;
-}
-
-.glyphicon-remove{
-	color: red;
-}
-
 #results-header{
 	background-color: #FFEC8B;	
 }
@@ -105,13 +97,6 @@ body {
 #results-footer{
 	text-align: center;
 	background-color: #FFEC8B;
-}
-
-.modalButton{
-	padding: 10px;
-	margin: 0px 10px;
-	font-size: 24px;
-	font-weight: bold;
 }
 
 #div-results{

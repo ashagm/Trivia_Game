@@ -187,7 +187,7 @@ var dataBank = [
 	{
 		index: 26,
 		question : "You can refresh the webpage in JavaScript by using __________ method.",
-		answer: ['window. reload', "location. reload", " window. refresh", " page. refresh"],
+		answer: ['window. reload', "location .reload", " window .refresh", " page .refresh"],
 		ansIndex: 1,
 		qaURL: "assets/images/js-27.jpg"
 	},
@@ -198,7 +198,6 @@ var dataBank = [
 		ansIndex: 0,
 		qaURL: "assets/images/js-29.jpg"
 	}
-
 
 ];
 
