@@ -2,6 +2,8 @@
 
 ## Theme - Javascript 
 
+[Click here to play](https://ashagm.github.io/Trivia_Game/)
+
 * Test your Javascript skills. 
 
 * Answer a set of 10 questions
