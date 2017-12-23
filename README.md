@@ -15,3 +15,5 @@
 * Press 'Play again' to play another set of 10 questions
 
 * Press 'Close' to end the game and go back to start page.
+
+**Image credits - Internet. 
